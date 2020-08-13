@@ -1,10 +1,10 @@
-type Product = {
+export type Product = {
   sku: string;
   name: string;
   price: number;
 };
 
-const products: Product[] = [
+export const products: Product[] = [
   { sku: "ipd", name: "Super iPad", price: 549.99 },
   { sku: "mbp", name: "MacBook Pro", price: 1399.99 },
   { sku: "atv", name: "Apple TV", price: 109.5 },
@@ -17,13 +17,13 @@ const products: Product[] = [
  * we will bundle in a free VGA adapter free of charge with every MacBook Pro sold
  */
 
-const pricingRules = {
+export const pricingRules = {
   threeForTwo: { rule: () => {}, products: ["atv"] },
   bulkDiscount: { rule: () => {}, products: ["ipd"] },
   adapterBundle: { rule: () => {}, products: ["mbp"] },
 }
 
-class Checkout {
+export class Checkout {
   pricingRules: object;
   scannedSKUs: string[];
 
