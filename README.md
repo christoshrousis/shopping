@@ -1,4 +1,8 @@
+# How to run this project.
 
+After a `npm i`, you can run `npm run test` to run the test suite. The test suite will go through some test, including testing the main class against the scenarios from the spec.
+
+This project also uses "[gitmoji](https://gitmoji.carloscuesta.me)" in it's commit messages.
 
 # Original Spec.
 

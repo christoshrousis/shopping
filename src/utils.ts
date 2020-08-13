@@ -1,9 +1,9 @@
-var formatter = new Intl.NumberFormat("en-AU", {
-  style: "currency",
-  currency: "AUD",
-});
-
-
+/**
+ * Takes an array, and returns a map.
+ * @param array The products array, unkeyed.
+ * @param keyField The field to use as the id.
+ * @returns Mapped object, based off the keyField.
+ */
 export const arrayToObject = (array: Product[], keyField: string): object =>
   array.reduce((obj, item) => {
     // As mentioned in the index file, I am missing some typing here.
@@ -12,6 +12,16 @@ export const arrayToObject = (array: Product[], keyField: string): object =>
     return obj;
   }, {});
 
+const formatter = new Intl.NumberFormat("en-AU", {
+  style: "currency",
+  currency: "AUD",
+});
+/**
+ * Takes a number, a returns a formatted string.
+ * 
+ * @param number Unformatted number, integer or decimal.
+ * @returns The number as a formatted string as per the supplied spec.
+ */
 export const numberFormatter = (number: number) =>
   formatter.format(number).replace(/,/g, "");
 

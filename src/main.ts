@@ -51,6 +51,13 @@ export class Checkout {
     this.pricingRules = pricingRules;
     this.scannedSKUs = [];
 
+    /**
+     * When I intiially wrote this code I passing in the objects
+     * instead of a string of the SKU, a way to resolve it was to create a map
+     * of the products. The products where presented as a table, and client data is usually
+     * tabular in nature, so taking a more tabular set of data and converting it to
+     * a map seemed more flexible for the future...
+     */
     const products: Product[] = [
       { sku: "ipd", name: "Super iPad", price: 549.99 },
       { sku: "mbp", name: "MacBook Pro", price: 1399.99 },
@@ -61,6 +68,10 @@ export class Checkout {
     this.productsMap = arrayToObject(products, "sku");
   }
 
+  /**
+   * Scans in a string of the SKU, and stores it against the object
+   * @param {string} sku The sku of the object.
+   */
   scan(sku: string) {
     /**
      * This ts ignore is because I didn't use generic typying on the 
@@ -70,6 +81,10 @@ export class Checkout {
     this.scannedSKUs.push(this.productsMap[sku]);
   }
 
+  /**
+   * Returns the total price of scanned items.
+   * @returns {number} The price, as a number.
+   */
   totalPrice(): number {
     const reducer = (accumulator: number, currentValue: Product) =>
       accumulator + currentValue.price;
@@ -83,13 +98,15 @@ export class Checkout {
   total(): string {
     /**
      * When I first set out, I wasn't sure whether I would
-     * require a key, so I decided to createed pricing rules as an Object.
+     * require a key, so I decided to create pricing rules as an Object.
      * It turns out I didn't need this, but decided not to refactor needlessly.
      */
 
     /**
      * Loop over all pricing rules, then apply the rules against
-     * the array of scanned products.
+     * the array of scanned products. This map could potentially
+     * be extracted to be more composable, but decided it was out of scope
+     * for this project.
      */
     const discounts = Object.entries(this.pricingRules).map(
       ([name, pricingRule]) => {
@@ -100,6 +117,10 @@ export class Checkout {
         return rule(applicableProducts);
       }
     );
+    /**
+     * Discounts comes back as an array of discounts that should
+     * be applied, so I run a sum reduce to get the total discount amount.
+     */
     const totalDiscount = discounts.reduce(
       (accumulator, currentValue) => accumulator + currentValue
     );
