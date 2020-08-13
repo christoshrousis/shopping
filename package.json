@@ -4,7 +4,7 @@
   "description": "The DiUS computer store checkout system.",
   "main": "src/main.ts",
   "scripts": {
-    "run": "node dist/main.js",
+    "dev": "tsc && node dist/main.js",
     "build": "tsc",
     "test": "jest"
   },
