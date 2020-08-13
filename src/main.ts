@@ -1,3 +1,9 @@
+var formatter = new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+});
+
+
 export type Product = {
   sku: string;
   name: string;
@@ -73,6 +79,6 @@ export class Checkout {
     const totalDiscount = discounts.reduce(
       (accumulator, currentValue) => accumulator + currentValue
     );
-    return this.totalPrice() - totalDiscount;
+    return formatter.format(this.totalPrice() - totalDiscount).replace(/,/g, '');
   }
 }

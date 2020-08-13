@@ -61,6 +61,7 @@ describe("Provided Example Scenarios", () => {
     checkout.scan({ sku: "vga", name: "VGA adapter", price: 30.0 });
     expect(checkout.total()).toBe("$249.00");
   });
+
   test("SKUs Scanned: atv, ipd, ipd, atv, ipd, ipd, ipd Total expected: $2718.95", () => {
     const checkout = new Checkout(pricingRules);
     checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
@@ -72,6 +73,7 @@ describe("Provided Example Scenarios", () => {
     checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
     expect(checkout.total()).toBe("$2718.95");
   });
+
   test("SKUs Scanned: mbp, vga, ipd Total expected: $1949.98", () => {
     const checkout = new Checkout(pricingRules);
     checkout.scan({ sku: "mbp", name: "MacBook Pro", price: 1399.99 });
