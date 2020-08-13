@@ -3,21 +3,37 @@ import { Checkout, pricingRules } from "./main";
 describe("Expected Behaviours", () => {
   test("Scanning a product should populate a collection of those products.", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
+    checkout.scan("ipd");
+    checkout.scan("ipd");
     expect(checkout.scannedSKUs.length).toBe(2);
   });
 
   test("Total should return a formatted final price string.", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
+    checkout.scan("ipd");
     expect(checkout.total()).toBe("$549.99");
   });
 
   test("Total should return a formatted final price string.", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
+    checkout.scan("ipd");
     expect(checkout.total()).toBe("$549.99");
+  });
+
+  test("Our checkout system can scan items in any order.", () => {
+    const checkout = new Checkout(pricingRules);
+    checkout.scan("atv");
+    checkout.scan("atv");
+    checkout.scan("atv");
+    checkout.scan("vga");
+    expect(checkout.total()).toBe("$249.00");
+
+    const checkoutBackwards = new Checkout(pricingRules);
+    checkoutBackwards.scan("vga");
+    checkoutBackwards.scan("atv");
+    checkoutBackwards.scan("atv");
+    checkoutBackwards.scan("atv");
+    expect(checkoutBackwards.total()).toBe("$249.00");
   });
 });
 
@@ -55,30 +71,30 @@ describe("Pricing Rules from Spec", () => {
 describe("Provided Example Scenarios", () => {
   test("When SKUs Scanned: atv, atv, atv, vga Total expected: $249.00", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
-    checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
-    checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
-    checkout.scan({ sku: "vga", name: "VGA adapter", price: 30.0 });
+    checkout.scan("atv");
+    checkout.scan("atv");
+    checkout.scan("atv");
+    checkout.scan("vga");
     expect(checkout.total()).toBe("$249.00");
   });
 
   test("SKUs Scanned: atv, ipd, ipd, atv, ipd, ipd, ipd Total expected: $2718.95", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
-    checkout.scan({ sku: "atv", name: "Apple TV", price: 109.5 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
+    checkout.scan("atv");
+    checkout.scan("ipd");
+    checkout.scan("ipd");
+    checkout.scan("atv");
+    checkout.scan("ipd");
+    checkout.scan("ipd");
+    checkout.scan("ipd");
     expect(checkout.total()).toBe("$2718.95");
   });
 
   test("SKUs Scanned: mbp, vga, ipd Total expected: $1949.98", () => {
     const checkout = new Checkout(pricingRules);
-    checkout.scan({ sku: "mbp", name: "MacBook Pro", price: 1399.99 });
-    checkout.scan({ sku: "vga", name: "VGA adapter", price: 30.0 });
-    checkout.scan({ sku: "ipd", name: "Super iPad", price: 549.99 });
+    checkout.scan("mbp");
+    checkout.scan("vga");
+    checkout.scan("ipd");
     expect(checkout.total()).toBe("$1949.98");
   });
 });

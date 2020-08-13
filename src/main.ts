@@ -1,25 +1,16 @@
-var formatter = new Intl.NumberFormat('en-AU', {
-  style: 'currency',
-  currency: 'AUD',
-});
-
-
-export type Product = {
-  sku: string;
-  name: string;
-  price: number;
-};
-
-export const products: Product[] = [
-  { sku: "ipd", name: "Super iPad", price: 549.99 },
-  { sku: "mbp", name: "MacBook Pro", price: 1399.99 },
-  { sku: "atv", name: "Apple TV", price: 109.5 },
-  { sku: "vga", name: "VGA adapter", price: 30.0 },
-];
-
-export const pricingRules = {
+import { arrayToObject, numberFormatter, Product, PricingRules } from "./utils"
+/**
+ * One of the requirements for the project was flexibility.
+ * To introduce fexibility, I decided to create a set of rules,
+ * and each rule had an array of applicable product skus.
+ * 
+ * This did cause an issue in my "adapterBundle" method and produced
+ * a "magic" number, which was the price of the VGA cable. I decided not to refactor
+ * this as I wanted to stick to the 2 hour period and leave it as a discussion point.
+ */
+export const pricingRules: PricingRules = {
   threeForTwo: {
-    rule: (products: Product[]): number => {
+    rule: (products) => {
       const productCount = products.length;
       if (productCount === 0) return 0;
       const unitPrice = products[0].price;
@@ -28,7 +19,7 @@ export const pricingRules = {
     products: ["atv"],
   },
   bulkDiscount: {
-    rule: (products: Product[]): number => {
+    rule: (products) => {
       const productCount = products.length;
       if (productCount === 0) return 0;
       const unitPrice = products[0].price;
@@ -38,7 +29,7 @@ export const pricingRules = {
     products: ["ipd"],
   },
   adapterBundle: {
-    rule: (products: Product[]): number => {
+    rule: (products) => {
       const productCount = products.length;
       if (productCount === 0) return 0;
       return productCount * 30.0;
@@ -47,17 +38,36 @@ export const pricingRules = {
   },
 };
 
+/**
+ * The main class responsible for scanning in objects.
+ * @class
+ */
 export class Checkout {
   pricingRules: object;
   scannedSKUs: Product[];
+  productsMap: object;
 
   constructor(pricingRules: object) {
     this.pricingRules = pricingRules;
     this.scannedSKUs = [];
+
+    const products: Product[] = [
+      { sku: "ipd", name: "Super iPad", price: 549.99 },
+      { sku: "mbp", name: "MacBook Pro", price: 1399.99 },
+      { sku: "atv", name: "Apple TV", price: 109.5 },
+      { sku: "vga", name: "VGA adapter", price: 30.0 },
+    ];
+    
+    this.productsMap = arrayToObject(products, "sku");
   }
 
-  scan(product: Product) {
-    this.scannedSKUs.push(product);
+  scan(sku: string) {
+    /**
+     * This ts ignore is because I didn't use generic typying on the 
+     * arrayToObject, and figured it might be overkill and out of scope to type this.
+     */
+    // @ts-ignore 
+    this.scannedSKUs.push(this.productsMap[sku]);
   }
 
   totalPrice(): number {
@@ -66,7 +76,21 @@ export class Checkout {
     return this.scannedSKUs.reduce(reducer, 0);
   }
 
-  total() {
+  /**
+   * Returns the total price of scanned items, with discounts applied. 
+   * @returns {string} The price, as a formatted string.
+   */
+  total(): string {
+    /**
+     * When I first set out, I wasn't sure whether I would
+     * require a key, so I decided to createed pricing rules as an Object.
+     * It turns out I didn't need this, but decided not to refactor needlessly.
+     */
+
+    /**
+     * Loop over all pricing rules, then apply the rules against
+     * the array of scanned products.
+     */
     const discounts = Object.entries(this.pricingRules).map(
       ([name, pricingRule]) => {
         const { rule, products } = pricingRule;
@@ -79,6 +103,6 @@ export class Checkout {
     const totalDiscount = discounts.reduce(
       (accumulator, currentValue) => accumulator + currentValue
     );
-    return formatter.format(this.totalPrice() - totalDiscount).replace(/,/g, '');
+    return numberFormatter(this.totalPrice() - totalDiscount);
   }
 }
