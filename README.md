@@ -4,6 +4,13 @@ After a `npm i`, you can run `npm run test` to run the test suite. The test suit
 
 This project also uses "[gitmoji](https://gitmoji.carloscuesta.me)" in it's commit messages.
 
+
+# References
+
+I used the following articles for setting up this project with jest, but skipped out on the coverage reports:
+https://medium.com/@admin_86118/testing-typescript-node-with-jest-6bf5db18119c
+https://dev.to/muhajirdev/unit-testing-with-typescript-and-jest-2gln
+
 # Original Spec.
 
 DiUS is starting a computer store. You have been engaged to build the checkout system. We will start with the following products in our catalogue
